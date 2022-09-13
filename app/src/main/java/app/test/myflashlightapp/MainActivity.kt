@@ -8,6 +8,7 @@ import android.os.Build
 import android.os.Bundle
 import android.widget.ImageView
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 
@@ -28,7 +29,10 @@ class MainActivity : AppCompatActivity() {
             val cameraId = cameraManager.cameraIdList[0]
             if (!flashLightStatus) {
                 //image color red
-                powerimg.setColorFilter(ContextCompat.getColor(this, R.color.black), PorterDuff.Mode.MULTIPLY)
+                powerimg.setColorFilter(
+                    ContextCompat.getColor(this, R.color.black),
+                    PorterDuff.Mode.MULTIPLY
+                )
                 try {
                     cameraManager.setTorchMode(cameraId, true)
                     flashLightStatus = true
@@ -45,27 +49,48 @@ class MainActivity : AppCompatActivity() {
         powerimg.setOnClickListener {
             powerimg.visibility = ImageView.INVISIBLE
             powerimg1.visibility = ImageView.VISIBLE
-                powerimg.setColorFilter(ContextCompat.getColor(this, R.color.black), PorterDuff.Mode.MULTIPLY)
-                val cameraManager = getSystemService(Context.CAMERA_SERVICE) as CameraManager
-                val cameraId = cameraManager.cameraIdList[0]
-                if (!flashLightStatus) {
-                    //image color red
-                    powerimg.setColorFilter(ContextCompat.getColor(this, R.color.black), PorterDuff.Mode.MULTIPLY)
-                    try {
-                        cameraManager.setTorchMode(cameraId, true)
-                        flashLightStatus = true
-                    } catch (e: CameraAccessException) {
-                    }
-                } else {
-                    try {
-                        cameraManager.setTorchMode(cameraId, false)
-                        flashLightStatus = false
-                    } catch (e: CameraAccessException) {
-                    }
+            powerimg.setColorFilter(
+                ContextCompat.getColor(this, R.color.black),
+                PorterDuff.Mode.MULTIPLY
+            )
+            val cameraManager = getSystemService(Context.CAMERA_SERVICE) as CameraManager
+            val cameraId = cameraManager.cameraIdList[0]
+            if (!flashLightStatus) {
+                //image color red
+                powerimg.setColorFilter(
+                    ContextCompat.getColor(this, R.color.black),
+                    PorterDuff.Mode.MULTIPLY
+                )
+                try {
+                    cameraManager.setTorchMode(cameraId, true)
+                    flashLightStatus = true
+                } catch (e: CameraAccessException) {
+                }
+            } else {
+                try {
+                    cameraManager.setTorchMode(cameraId, false)
+                    flashLightStatus = false
+                } catch (e: CameraAccessException) {
                 }
             }
         }
     }
+
+    //on back pressed
+    override fun onBackPressed() {
+        //alert dialog
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Exit")
+        builder.setMessage("Are you sure you want to exit?")
+        builder.setPositiveButton("Yes") { _, _ ->
+            finish()
+        }
+        builder.setNegativeButton("No") { dialog, _ ->
+            dialog.dismiss()
+        }
+        builder.show()
+    }
+}
 
 
 
